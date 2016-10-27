@@ -61,7 +61,26 @@ class VsanDockerPersistentVolumeSystemImpl(vim.host.VsanDockerPersistentVolumeSy
             return result 
         except:
             logger.info("Failed to fetch tenants list", exc_info=1)
+     
+    def GetDatastoreAccessPrivileges(self):
+        logger.info("Running GetDatastoreAccessPrivileges() method")
+        #result = vim.vsan.VsanDockerPersistentVolumeTenantList()
+        result = vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges()
 
-
+        try:
+            ## fetch data from DB (fake it for now)
+            # Note: we should be using HostD tasks for long running work.
+            # See usage of CreateRunHostdTask in  VSAN .py code. 
+            # For now, we do blocking calls
+                        
+            result.datastore = "datastore1"
+            result.create_volumes = True
+            result.delete_volumes = False
+            result.mount_volumes = True
+            result.max_volume_size = '500MB'
+            result.usage_quota = '1TB'
+        except:
+            logger.info("Failed to fetch datastore access privileges", exc_info=1)
+        return result 
 GetMoManager().RegisterObjects([VsanDockerPersistentVolumeSystemImpl("vsan-docker-persistent-volumes")])
 

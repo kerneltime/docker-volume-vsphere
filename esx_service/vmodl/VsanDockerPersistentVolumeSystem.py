@@ -63,6 +63,73 @@ class VsanDockerPersistentVolumeTenantList:
    def tenants(self):
       pass
 
+class VsanDockerPersistentVolumeDatastoreAccessPrivileges:
+   _name = "vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges"
+   @JavaDocs(parent=_name, docs =
+   """
+   This class encapsulates the Docker Volume Datastore Access Privileges.
+   """
+   )
+   
+   @DataType(name=_name, version=_VERSION)
+   def __init__(self):
+      pass
+
+   @JavaDocs(parent=_name, docs =
+   """
+   Datastore name
+   """
+   )
+   @Attribute(parent=_name, typ="string")
+   def datastore(self):
+      pass
+
+   @JavaDocs(parent=_name, docs =
+   """
+   Indicates whether the privilege has create volume privilege
+   """
+   )
+   @Attribute(parent=_name, typ="boolean")
+   def create_volumes(self):
+      pass
+
+   @JavaDocs(parent=_name, docs =
+   """
+   Indicates whether the privilege has delete volume privilege
+   """
+   )
+   @Attribute(parent=_name, typ="boolean")
+   def delete_volumes(self):
+      pass
+
+   @JavaDocs(parent=_name, docs =
+   """
+   Indicates whether the privilege has mount volume privilege
+   """
+   )
+   @Attribute(parent=_name, typ="boolean")
+   def mount_volumes(self):
+      pass
+
+   @JavaDocs(parent=_name, docs =
+   """
+   Indicates max volume size allowed on this datastore
+   """
+   )
+   @Attribute(parent=_name, typ="string")
+   def max_volume_size(self):
+      pass
+
+   @JavaDocs(parent=_name, docs =
+   """
+   Indicates total storage usage allowed on this datastore
+   """
+   )
+   @Attribute(parent=_name, typ="string")
+   def usage_quota(self):
+      pass
+     
+
 
 class VsanDockerPersistentVolumeSystem:
    ''' This is the API to Docker Persistent Volumes on VSAN'''
@@ -84,7 +151,11 @@ class VsanDockerPersistentVolumeSystem:
    @Method(parent=_name, wsdlName="GetTenantList")
    @Return(typ="vim.vsan.VsanDockerPersistentVolumeTenantList")
    def GetTenantList(self):
-      pass
+       pass
 
+   @Method(parent=_name, wsdlName="GetDatastoreAccessPrivileges")
+   @Return(typ="vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges")
+   def GetDatastoreAccessPrivileges(self):
+       pass  
 
 RegisterVmodlTypes()

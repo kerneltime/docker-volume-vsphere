@@ -87,19 +87,23 @@ def get_vsan_network_info(stub):
     return vhs.VsanHostQueryVerifyNetworkSettings()
 
 
-def get_dockvol_obj(stub):
-    import VsanDockerPersistentVolumeSystem
-    pv = vim.host.VsanDockerPersistentVolumeSystem("vsan-docker-persistent-volumes", stub)
-    return pv.GetTenantList()
-
 
 if __name__ == "__main__":
     stub = connect_to_vsanmgmt()
     print("\n**** Getting VSAN network info: \n", get_vsan_network_info(stub))
 
+    import VsanDockerPersistentVolumeSystem
+    pv = vim.host.VsanDockerPersistentVolumeSystem("vsan-docker-persistent-volumes", stub)
+
     print("\n**** Getting DOCKVOL TENANTS:")
-    tenantsList = get_dockvol_obj(stub)
+    tenantsList = pv.GetTenantList()
     print("  total: ", len(tenantsList.tenants),
           "list: ", tenantsList.tenants, 
           "First tenant: ", tenantsList.tenants[0]
     )
+
+    print("\n**** Getting Datastore Access Privileges Object:")
+    privileges = pv.GetDatastoreAccessPrivileges()
+    content = privileges.__dict__
+    for i in content.keys():
+        print ("{0}: value={1}".format(i, content[i]))
