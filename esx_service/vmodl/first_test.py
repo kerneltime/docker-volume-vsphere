@@ -86,6 +86,19 @@ def get_vsan_network_info(stub):
     vhs = vim.HostVsanHealthSystem('ha-vsan-health-system', stub)
     return vhs.VsanHostQueryVerifyNetworkSettings()
 
+def print_datastore_access_privileges_obj(privileges):
+    content = privileges.__dict__
+    for i in content.keys():
+        print ("{0}: value={1}".format(i, content[i]))
+
+def print_tenent_obj(tenant):
+    print "name: ", tenant.name
+    print "description: ", tenant.description
+    print "default_datastore: ", tenant.default_datastore
+    #print "default_privileges: "
+    #print_datastore_access_privileges_obj(tenant.default_privileges)
+    #print "vms: ", tenant.vms
+
 
 
 if __name__ == "__main__":
@@ -107,3 +120,37 @@ if __name__ == "__main__":
     content = privileges.__dict__
     for i in content.keys():
         print ("{0}: value={1}".format(i, content[i]))
+    
+
+    print("\n**** Creating Datastore Access Privileges Object:")
+    datastore = "datastore2"
+    create_volumes = True
+    delete_volumes = False
+    mount_volumes = True
+    max_volume_size = '600MB'
+    usage_quota = '2TB'
+    privileges = pv.CreateDatastoreAccessPrivileges(datastore = datastore,
+                                                    create_volumes = create_volumes,
+                                                    delete_volumes = delete_volumes,
+                                                    mount_volumes = mount_volumes,
+                                                    max_volume_size = max_volume_size,
+                                                    usage_quota = usage_quota)
+    content = privileges.__dict__
+    for i in content.keys():
+        print ("{0}: value={1}".format(i, content[i]))
+    
+    print("\n**** Creating Tenant Object:")
+    name = "tenant1"
+    description = "My first tenant"
+    default_datastore = "default_ds"
+    default_privileges = pv.CreateDatastoreAccessPrivileges(datastore = "default_ds",
+                                                    create_volumes = True,
+                                                    delete_volumes = True,
+                                                    mount_volumes = True,
+                                                    max_volume_size = "No_limit",
+                                                    usage_quota = "No_limit")
+    vms = ["vm1", "vm2"]
+    tenant = pv.CreateTenant(name = name,
+                             description = description,
+                             default_datastore = default_datastore)
+    print_tenent_obj(tenant)

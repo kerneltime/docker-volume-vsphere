@@ -24,6 +24,7 @@ import traceback
 
 import logging
 import sys
+import copy
 
 
 from pyVmomi import Vim, vim, vmodl
@@ -82,5 +83,40 @@ class VsanDockerPersistentVolumeSystemImpl(vim.host.VsanDockerPersistentVolumeSy
         except:
             logger.info("Failed to fetch datastore access privileges", exc_info=1)
         return result 
+    
+    def CreateDatastoreAccessPrivileges(self, datastore, create_volumes, delete_volumes, mount_volumes, max_volume_size, usage_quota):
+        result = vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges()
+        try:
+        # Currently, just fake it
+        # Need to call corressponding API in auth_data.py
+        # now just return the object
+            result.datastore = datastore
+            result.create_volumes = create_volumes
+            result.delete_volumes = delete_volumes
+            result.mount_volumes = mount_volumes
+            result.max_volume_size = max_volume_size
+            result.usage_quota = usage_quota
+        except:
+            logger.info("Failed to create datastore access privileges", exc_info=1)
+
+        return result 
+    
+    def CreateTenant(self, name, description, default_datastore, default_privileges=None, vms=None, privileges=None):
+        result = vim.vsan.VsanDockerPersistentVolumeTenant()
+        try:
+        # Currently, just fake it
+        # Need to call corressponding API in auth_data.py
+        # now just return the object
+            result.name = name
+            result.description = description
+            result.default_datastore = default_datastore
+            #result.default_privileges = default_privileges
+            #result.vms = copy.deepcopy(vms)
+            #result.privileges = copy.deepcopy(privileges)
+        except:
+            logger.info("Failed to create datastore access privileges", exc_info=1)
+
+        return result 
+
 GetMoManager().RegisterObjects([VsanDockerPersistentVolumeSystemImpl("vsan-docker-persistent-volumes")])
 
