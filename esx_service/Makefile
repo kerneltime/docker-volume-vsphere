@@ -110,8 +110,10 @@ TO_ESX_INITD := $(INIT_SCRIPT)
 PY_SQLITE := tools/sqlite/sqlite3
 SO_SQLITE := tools/sqlite/*.so
 
+VMODL_PY := $(shell find ../esx_service/vmodl -name '*.py')
+
 # copy files to staging area and then build the VIB
-$(VIB_BIN): $(TO_WDIR) $(TO_ESX_BIN) $(TO_ESX_PY) $(TO_ESX_LIB) $(TO_ESX_INITD) $(PY_SQLITE) $(SO_SQLITE)
+$(VIB_BIN): $(TO_WDIR) $(TO_ESX_BIN) $(TO_ESX_PY) $(TO_ESX_LIB) $(TO_ESX_INITD)  $(VMODL_PY) $(PY_SQLITE) $(SO_SQLITE)
 	@echo Staging in $(PAYLOAD)
 	@mkdir -p $(VMDKOPS_BIN) $(VMDKOPS_PY) $(VMDKOPS_PY2) $(VMDKOPS_LIB) $(VMDKOPS_LIB64) $(VMDKOPS_INITD)
 	@chmod -R u+w $(PAYLOAD)
@@ -122,6 +124,7 @@ $(VIB_BIN): $(TO_WDIR) $(TO_ESX_BIN) $(TO_ESX_PY) $(TO_ESX_LIB) $(TO_ESX_INITD) 
 	cp $(VMCI_SRV_LIB) $(VMDKOPS_LIB)/$(VMCI_SRV_LIB_NAME)
 	cp $(VMCI_SRV_LIB64) $(VMDKOPS_LIB64)/$(VMCI_SRV_LIB_NAME)
 	cp $(TO_ESX_INITD) $(VMDKOPS_INITD)
+	VMDKOPS_PAYLOAD=$(VMDKOPS_PAYLOAD) $(MAKE)  --directory=vmodl copy_to_payload
 	@chmod -R u+x $(VMDKOPS_BIN)
 	@sed "s/   <version>1.0.0-0.0.1<\/version>/   <version>$(PKG_VERSION)-$(RELEASE_VERSION)<\/version>/g" $(TO_WDIR) > $(WDIR)/$(DESCRIPTOR)
 	$(VIBAUTHOR) $(VIBAUTHOR_PARAMS)
