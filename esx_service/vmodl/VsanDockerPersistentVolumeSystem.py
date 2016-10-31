@@ -261,13 +261,13 @@ class VsanDockerPersistentVolumeSystem:
    @Param(name="name", typ="string")
    @Param(name="description", typ="string")
    @Param(name="default_datastore", typ="string")
-   @Param(name="default_privileges", typ="vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges", flags=F_OPTIONAL)
+   @Param(name="default_privileges", typ="vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges")
    @Param(name="vms", typ="string[]", flags=F_OPTIONAL)
    @Param(name="privileges", typ="vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges[]", flags=F_OPTIONAL)
    @Return(typ="vim.vsan.VsanDockerPersistentVolumeTenant")
-   def CreateTenant(self, name, description, default_datastore, default_privileges=None, vms=None, privileges=None):
+   def CreateTenant(self, name, description, default_datastore, default_privileges, vms=None, privileges=None):
        pass
-
+   
 #    @JavaDocs(parent=_name, docs=
 #    """
 #    Get a VsanDockerPersistentVolumeTenant object with given tenant name
@@ -279,15 +279,39 @@ class VsanDockerPersistentVolumeSystem:
 #    def createTenant(self):
 #        pass 
 
-#    @JavaDocs(parent=_name, docs=
-#    """
-#    Add VMs to a tenant
-#    """
-#    )
-#    @Method(parent=_name, wsdlName="AddVMsToTenant")
-#    @Param(name="tenantName", typ="string")
-#    @Param(name="vmList", typ="string[]")
-#    def AddVMsToTenant(self):
-#        pass  
+   @JavaDocs(parent=_name, docs=
+   """
+   Add VMs to a tenant
+   """
+   )
+   @Method(parent=_name, wsdlName="AddVMsToTenant")
+   @Param(name="name", typ="string")
+   @Param(name="vms", typ="string[]")
+   @Return(typ='void')
+   def AddVMsToTenant(self, name, vms):
+       pass
+
+   @JavaDocs(parent=_name, docs=
+   """
+   Remove VMs from a tenant
+   """
+   )
+   @Method(parent=_name, wsdlName="RemoveVMsFromTenant")
+   @Param(name="name", typ="string")
+   @Param(name="vms", typ="string[]")
+   @Return(typ='void')
+   def RemoveVMsFromTenant(self, name, vms):
+       pass
+
+   @JavaDocs(parent=_name, docs=
+   """
+   List VMs for a tenant
+   """
+   )
+   @Method(parent=_name, wsdlName="ListVMsForTenant")
+   @Param(name="name", typ="string")
+   @Return(typ='string[]')
+   def ListVMsForTenant(self, name):
+       pass        
 
 RegisterVmodlTypes()

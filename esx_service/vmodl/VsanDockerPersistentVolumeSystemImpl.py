@@ -85,6 +85,7 @@ class VsanDockerPersistentVolumeSystemImpl(vim.host.VsanDockerPersistentVolumeSy
         return result 
     
     def CreateDatastoreAccessPrivileges(self, datastore, create_volumes, delete_volumes, mount_volumes, max_volume_size, usage_quota):
+        logger.info("Running CreateDatastoreAccessPrivileges() method")
         result = vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges()
         try:
         # Currently, just fake it
@@ -101,22 +102,54 @@ class VsanDockerPersistentVolumeSystemImpl(vim.host.VsanDockerPersistentVolumeSy
 
         return result 
     
-    def CreateTenant(self, name, description, default_datastore, default_privileges=None, vms=None, privileges=None):
+    def CreateTenant(self, name, description, default_datastore, default_privileges, vms=None, privileges=None):
+        logger.info("Running CreateTenant() method")
         result = vim.vsan.VsanDockerPersistentVolumeTenant()
         try:
-        # Currently, just fake it
-        # Need to call corressponding API in auth_data.py
-        # now just return the object
+            # Currently, just fake it
+            # Need to call corressponding API in auth_data.py
+            # now just return the object
             result.name = name
             result.description = description
             result.default_datastore = default_datastore
-            #result.default_privileges = default_privileges
-            #result.vms = copy.deepcopy(vms)
-            #result.privileges = copy.deepcopy(privileges)
+            result.default_privileges = copy.deepcopy(default_privileges)
+            result.vms = copy.deepcopy(vms)
+            result.privileges = copy.deepcopy(privileges)
         except:
             logger.info("Failed to create datastore access privileges", exc_info=1)
 
-        return result 
+        return result
+
+    def AddVMsToTenant(self, name, vms):
+        logger.info("Running AddVMsToTenant() method")
+        try:
+            # Currently, just fake it
+            # Need to call corressponding API in auth_data.py
+            logger.info("Add vms=%s to tenant=%s", vms, name)          
+        except:
+            logger.info("Failed to add vms to tenant", exc_info=1)
+    
+    def RemoveVMsFromTenant(self, name, vms):
+        logger.info("Running RemoveVMsFromTenant() method")
+        try:
+            # Currently, just fake it
+            # Need to call corressponding API in auth_data.py
+            logger.info("Remove vms=%s from tenant=%s", vms, name)          
+        except:
+            logger.info("Failed to add vms to tenant", exc_info=1)
+    
+    def ListVMsForTenant(self, name):
+        logger.info("Running ListVMsForTenant() method")
+        result = None
+        try:
+            # Currently, just fake it
+            # Need to call corressponding API in auth_data.py
+            result = ["test-vm1", "test-vm2"]
+            logger.info("List vms for tenant=%s vms=", name, result)          
+        except:
+            logger.info("Failed to list vms for tenant", exc_info=1)
+        
+        return result
 
 GetMoManager().RegisterObjects([VsanDockerPersistentVolumeSystemImpl("vsan-docker-persistent-volumes")])
 
