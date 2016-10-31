@@ -91,13 +91,19 @@ def print_datastore_access_privileges_obj(privileges):
     for i in content.keys():
         print ("{0}: value={1}".format(i, content[i]))
 
-def print_tenent_obj(tenant):
+def print_tenant_obj(tenant):
     print "name: ", tenant.name
     print "description: ", tenant.description
     print "default_datastore: ", tenant.default_datastore
     print "default_privileges: "
     print_datastore_access_privileges_obj(tenant.default_privileges)
-    #print "vms: ", tenant.vms
+    print "vms: ", tenant.vms
+    if tenant.privileges:
+        print "privileges: "
+        for p in tenant.privileges:
+            print_datastore_access_privileges_obj(p)
+    else:
+        print "privileges: ", tenant.privileges    
 
 
 
@@ -115,14 +121,14 @@ if __name__ == "__main__":
           "First tenant: ", tenantsList.tenants[0]
     )
 
-    print("\n**** Getting Datastore Access Privileges Object:")
+    print("\n**** Get Datastore Access Privileges Object:")
     privileges = pv.GetDatastoreAccessPrivileges()
     content = privileges.__dict__
     for i in content.keys():
         print ("{0}: value={1}".format(i, content[i]))
     
 
-    print("\n**** Creating Datastore Access Privileges Object:")
+    print("\n**** Create Datastore Access Privileges Object:")
     datastore = "datastore2"
     create_volumes = True
     delete_volumes = False
@@ -139,23 +145,39 @@ if __name__ == "__main__":
     for i in content.keys():
         print ("{0}: value={1}".format(i, content[i]))
     
-    # print("\n**** Creating Tenant Object:")
-    # name = "tenant1"
-    # description = "My first tenant"
-    # default_datastore = "default_ds"
-    # default_privileges = pv.CreateDatastoreAccessPrivileges(datastore = "default_ds",
-    #                                                 create_volumes = True,
-    #                                                 delete_volumes = True,
-    #                                                 mount_volumes = True,
-    #                                                 max_volume_size = "No_limit",
-    #                                                 usage_quota = "No_limit")
-    # vms = ["vm1", "vm2"]
-    # tenant = pv.CreateTenant(name = name,
-    #                          description = description,
-    #                          default_datastore = default_datastore,
-    #                          default_privileges = default_privileges)
-    # print_tenent_obj(tenant)
+    print("\n**** Create Tenant Object:")
+    name = "tenant1"
+    description = "My first tenant"
+    default_datastore = "default_ds"
+    default_privileges = pv.CreateDatastoreAccessPrivileges(datastore = "default_ds",
+                                                            create_volumes = True,
+                                                            delete_volumes = True,
+                                                            mount_volumes = True,
+                                                            max_volume_size = "No_limit",
+                                                            usage_quota = "No_limit")
+    vms = ["vm1", "vm2"]
+    tenant = pv.CreateTenant(name = name,
+                             description = description,
+                             default_datastore = default_datastore,
+                             default_privileges = default_privileges)
+    print_tenant_obj(tenant)
 
+    print("\n**** Remove Tenant Object:")
+    name = "tenant1"
+    tenant = pv.RemoveTenant(name = name)
+    print("\n**** Remove Tenant done:")
+
+    print("\n**** List Tenant Objects:")
+    tenant_list = pv.ListTenants()
+    print "Tenant lists len = {0}\n\n".format(len(tenant_list))
+    id = 0
+    for tenant in tenant_list:
+        id = id + 1
+        print "Tenant Info for tenant {0} Start".format(id)
+        print_tenant_obj(tenant)
+        print "Tenant Info for tenant {0} End".format(id)
+        print "\n\n"
+                          
     print("\n**** Add VMs to tenant:")
     name = "tenant1"
     vms = ["vm1", "vm2"]
@@ -174,5 +196,21 @@ if __name__ == "__main__":
     print("\n**** List VMs for tenant:")
     name = "tenant1"
     vms = pv.ListVMsForTenant(name = name)
-    print "vms={0}".format(vms)                           
+    print "vms={0}".format(vms)          
+
+    print("\n**** Add Datastore Access for tenant:")
+    name = "tenant1"
+   
+    privileges = pv.CreateDatastoreAccessPrivileges(datastore = "datastore1",
+                                                    create_volumes = True,
+                                                    delete_volumes = False,
+                                                    mount_volumes = True,
+                                                    max_volume_size = "550MB",
+                                                    usage_quota = "3TB")
+    pv.AddDatastoreAccessForTenant(name = name,
+                                   datastore = "datastore1",
+                                   rights ="create,mount",
+                                   volume_maxsize = "550MB",
+                                   volume_totalsize = "3TB")
+                                 
     

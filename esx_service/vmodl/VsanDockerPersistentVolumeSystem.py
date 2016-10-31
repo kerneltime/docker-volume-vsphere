@@ -200,7 +200,7 @@ class VsanDockerPersistentVolumeTenant:
    Indicates total storage usage allowed on this datastore
    """
    )
-   @Attribute(parent=_name, typ="vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges[]")
+   @Attribute(parent=_name, typ="vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges[]", flags=F_OPTIONAL)
    def privileges(self):
        pass     
 
@@ -257,7 +257,7 @@ class VsanDockerPersistentVolumeSystem:
    Create a VsanDockerPersistentVolumeTenant object
    """
    )
-   @Method(parent=_name, wsdlName="createTenant")
+   @Method(parent=_name, wsdlName="CreateTenant")
    @Param(name="name", typ="string")
    @Param(name="description", typ="string")
    @Param(name="default_datastore", typ="string")
@@ -265,19 +265,30 @@ class VsanDockerPersistentVolumeSystem:
    @Param(name="vms", typ="string[]", flags=F_OPTIONAL)
    @Param(name="privileges", typ="vim.vsan.VsanDockerPersistentVolumeDatastoreAccessPrivileges[]", flags=F_OPTIONAL)
    @Return(typ="vim.vsan.VsanDockerPersistentVolumeTenant")
-   def CreateTenant(self, name, description, default_datastore, default_privileges, vms=None, privileges=None):
+   def CreateTenant(self, name, description, default_datastore, 
+                    default_privileges, vms=None, privileges=None):
        pass
-   
-#    @JavaDocs(parent=_name, docs=
-#    """
-#    Get a VsanDockerPersistentVolumeTenant object with given tenant name
-#    """
-#    )
-#    @Method(parent=_name, wsdlName="getTenant")
-#    @Param(name="tenantName", typ="string")
-#    @Return(typ="vim.vsan.VsanDockerPersistentVolumeTenant")
-#    def createTenant(self):
-#        pass 
+
+   @JavaDocs(parent=_name, docs=
+   """
+   Remove a VsanDockerPersistentVolumeTenant object
+   """
+   )
+   @Method(parent=_name, wsdlName="RemoveTenant")
+   @Param(name="name", typ="string")
+   @Return(typ="void")
+   def RemoveTenant(self, name):
+       pass
+
+   @JavaDocs(parent=_name, docs=
+   """
+   List all VsanDockerPersistentVolumeTenant objects
+   """
+   )
+   @Method(parent=_name, wsdlName="ListTenants")
+   @Return(typ="vim.vsan.VsanDockerPersistentVolumeTenant[]")
+   def ListTenants(self): 
+       pass 
 
    @JavaDocs(parent=_name, docs=
    """
@@ -312,6 +323,46 @@ class VsanDockerPersistentVolumeSystem:
    @Param(name="name", typ="string")
    @Return(typ='string[]')
    def ListVMsForTenant(self, name):
-       pass        
+       pass
+
+   @JavaDocs(parent=_name, docs=
+   """
+   Add DatastoreAccessPrivileges for a tenant
+   The fomat of param "rights" is a comma seperated list, and the valid choices are "create", "delete", "mount" and "all"
+   The format of param "volume-maxsize" is Num{MB,GB,TB} - e.g. 2TB
+   The format of param "volume-totalsize" is Num{MB,GB,TB} - e.g. 2TB
+   """
+   )
+   @Method(parent=_name, wsdlName="AddDatastoreAccessForTenant")
+   @Param(name="name", typ="string")
+   @Param(name="datastore", typ="string")
+   @Param(name="rights", typ="string", flags=F_OPTIONAL)
+   @Param(name="volume_maxsize", typ="string", flags=F_OPTIONAL)
+   @Param(name="volume_totalsize", typ="string", flags=F_OPTIONAL)
+   @Return(typ='void')
+   def AddDatastoreAccessForTenant(self, name, datastore, rights=None, volume_maxsize=None, volume_totalsize=None):
+       pass
+
+#    @JavaDocs(parent=_name, docs=
+#    """
+#    Modify DatastoreAccessPrivileges for a tenant
+#    Caller need to set param "create_volumes" to True to setting create volumes privilege
+#    Caller need to set param "create_volumes" to False to unsetting create volumes privilege
+#    Caller should not pass in "create_volumes" param if no change is needed this privilege
+#    Similar rules apply to param "delete_volumes" and "mount_volumes" too 
+#    """
+#    )
+#    @Method(parent=_name, wsdlName="ModifyDatastoreAccessForTenant")
+#    @Param(name="name", typ="string")
+#    @Param(name="datastore", typ="string")
+#    @Param(name="create_volumes", typ="boolean", flags=F_OPTIONAL)
+#    @Param(name="delete_volumes", typ="boolean", flags=F_OPTIONAL)
+#    @Param(name="mount_volumes", typ="boolean", flags=F_OPTIONAL)
+#    @Param(name="max_volume_size", typ="string", flags=F_OPTIONAL)
+#    @Param(name="usage_quota", typ="string", flags=F_OPTIONAL)
+#    @Return(typ='void')
+#    def ModifyDatastoreAccessForTenant(self, name, datastore, create_volumes=None, delete_volumes=None, 
+#                                       mount_volumes=None, max_volume_size=None, usage_quota=None):
+#        pass                
 
 RegisterVmodlTypes()
