@@ -80,14 +80,14 @@ class VmdkCreateRemoveTestCase(unittest.TestCase):
     """Unit test for VMDK Create and Remove ops"""
 
     volName = "vol_UnitTest_Create"
-    badOpts = {u'policy': u'good', volume_kv.SIZE: u'12unknown', volume_kv.DISK_ALLOCATION_FORMAT: u'5disk'}
-    invalid_access_choice = {volume_kv.ACCESS: u'only-read'}
-    invalid_access_opt = {u'acess': u'read-write'}
+    badOpts = {'policy': 'good', volume_kv.SIZE: '12unknown', volume_kv.DISK_ALLOCATION_FORMAT: '5disk'}
+    invalid_access_choice = {volume_kv.ACCESS: 'only-read'}
+    invalid_access_opt = {'acess': 'read-write'}
     valid_access_opt = {volume_kv.ACCESS: 'read-only'}
-    invalid_attach_as_choice = {volume_kv.ATTACH_AS: u'persisten'}
-    invalid_attach_as_opt = {u'atach-as': u'persistent'}
-    valid_attach_as_opt_1 = {volume_kv.ATTACH_AS: u'persistent'}
-    valid_attach_as_opt_2 = {volume_kv.ATTACH_AS: u'independent_persistent'}
+    invalid_attach_as_choice = {volume_kv.ATTACH_AS: 'persisten'}
+    invalid_attach_as_opt = {'atach-as': 'persistent'}
+    valid_attach_as_opt_1 = {volume_kv.ATTACH_AS: 'persistent'}
+    valid_attach_as_opt_2 = {volume_kv.ATTACH_AS: 'independent_persistent'}
     name = ""
     vm_name = 'test-vm'
 
@@ -255,7 +255,7 @@ class ValidationTestCase(unittest.TestCase):
         self.path = vsan_info.get_vsan_datastore().info.url
         for n in self.policy_names:
             result = vsan_policy.create(n, self.policy_content)
-            self.assertEquals(None, result,
+            self.assertEqual(None, result,
                               "failed creating policy %s (%s)" % (n, result))
 
     def tearDown(self):
@@ -472,7 +472,7 @@ class VmdkAuthorizeTestCase(unittest.TestCase):
         
         error_info = tenant1.set_datastore_access_privileges(self.auth_mgr.conn, privileges)
         self.assertEqual(error_info, None)
-        opts={u'size': u'100MB', u'fstype': u'ext4'}
+        opts={'size': '100MB', 'fstype': 'ext4'}
         error_info, tenant_uuid, tenant_name = auth.authorize(self.vm_uuid, vm_ds, auth.CMD_CREATE, opts)
         self.assertEqual(error_info, "No create privilege" )
 
@@ -494,12 +494,12 @@ class VmdkAuthorizeTestCase(unittest.TestCase):
             error_info = auth.add_volume_to_volumes_table(tenant1.id, vm_ds, "VmdkAuthorizeTestVol1", 100)
             self.assertEqual(error_info, None)
 
-        opts={u'size': u'600MB', u'fstype': u'ext4'}
+        opts={'size': '600MB', 'fstype': 'ext4'}
         error_info, tenant_uuid, tenant_name = auth.authorize(self.vm_uuid, vm_ds, auth.CMD_CREATE, opts)
         # create a volume with 600MB which exceed the"max_volume_size", command should fail
         self.assertEqual(error_info, "volume size exceeds the max volume size limit") 
 
-        opts={u'size': u'500MB', u'fstype': u'ext4'}
+        opts={'size': '500MB', 'fstype': 'ext4'}
         error_info, tenant_uuid, tenant_name = auth.authorize(self.vm_uuid, vm_ds, auth.CMD_CREATE, opts)
         self.assertEqual(error_info, None)
 
@@ -507,7 +507,7 @@ class VmdkAuthorizeTestCase(unittest.TestCase):
             error_info = auth.add_volume_to_volumes_table(tenant1.id, vm_ds, "VmdkAuthorizeTestVol2", 500)
             self.assertEqual(error_info, None)
         
-        opts={u'size': u'500MB', u'fstype': u'ext4'}
+        opts={'size': '500MB', 'fstype': 'ext4'}
         error_info, tenant_uuid, tenant_name = auth.authorize(self.vm_uuid, vm_ds, auth.CMD_CREATE, opts)
         self.assertEqual(error_info, "The total volume size exceeds the usage quota")
 

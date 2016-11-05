@@ -62,13 +62,13 @@ def register_adapters_and_converters():
         return val.isoformat(" ")
 
     def convert_date(val):
-        return datetime.date(*map(int, val.split("-")))
+        return datetime.date(*list(map(int, val.split("-"))))
 
     def convert_timestamp(val):
         datepart, timepart = val.split(" ")
-        year, month, day = map(int, datepart.split("-"))
+        year, month, day = list(map(int, datepart.split("-")))
         timepart_full = timepart.split(".")
-        hours, minutes, seconds = map(int, timepart_full[0].split(":"))
+        hours, minutes, seconds = list(map(int, timepart_full[0].split(":")))
         if len(timepart_full) == 2:
             microseconds = int('{:0<6.6}'.format(timepart_full[1].decode()))
         else:

@@ -31,7 +31,7 @@ def convert_to_MB(vol_size_str):
                    'PB' : 1024*1024*1024,
     }
     
-    if unit.upper() in conversions.keys():
+    if unit.upper() in list(conversions.keys()):
         value = value*conversions[unit]
     else:
         logging.error("Invalid volume size")

@@ -96,8 +96,8 @@ def update_policy_file_content(path, content):
         shutil.copy(path, backup_policy_filename(path))
         os.rename(tmpfile, path)
     except OSError:
-        print('Internal Error: Failed to update policy file contents: '
-                '{0}').format(path)
+        print(('Internal Error: Failed to update policy file contents: '
+                '{0}').format(path))
         raise
 
     return None

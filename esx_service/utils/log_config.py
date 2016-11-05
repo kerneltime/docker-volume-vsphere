@@ -129,16 +129,16 @@ def get_log_level(config_file=LOG_CONFIG_FILE):
 if __name__ == "__main__":
     conf_file = os.path.basename(LOG_CONFIG_FILE)
     log_file = configure(conf_file)
-    print("logging to %s:\n" % log_file)
+    print(("logging to %s:\n" % log_file))
     logging.info("==== start log ====")
     logging.error("Trying an error !")
     logging.warning("still a warning")
     logging.info("OK info")
     logging.debug("debugging")
     # visual check. Caveat: prints ALL log file
-    print("==========Content of %s========" % log_file)
+    print(("==========Content of %s========" % log_file))
     with open(log_file) as f:
-        print(f.read())
-    print("==========Content of %s========" % conf_file)
+        print((f.read()))
+    print(("==========Content of %s========" % conf_file))
     with open(conf_file) as f:
-        print(f.read())
+        print((f.read()))

@@ -65,12 +65,12 @@ class TestVmdkopsAdminSanity(unittest.TestCase):
         self.assertEqual(len(lines), 7)
         expected_headers = ['Version', 'Status', 'Pid', 'Port', 'LogConfigFile',
                            'LogFile', 'LogLevel']
-        headers = map(lambda s: s.split(': ')[0], lines)
+        headers = [s.split(': ')[0] for s in lines]
         self.assertEqual(expected_headers, headers)
 
 
 def all_dashes(string):
-    return all(map(lambda char: char == '-', string))
+    return all([char == '-' for char in string])
 
 if __name__ == '__main__':
     unittest.main()

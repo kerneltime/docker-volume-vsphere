@@ -37,65 +37,65 @@ volopts = "size:1gb"
 
 
 def doCreate(volDir):
-    print "Creating volumes"
+    print("Creating volumes")
     for vol in vols:
         volPath = os.path.join(volDir, "%s.vmdk" % vol)
         vmci.createVMDK(volPath, vol, None)
 
-    print "Verifying volume metadata"
+    print("Verifying volume metadata")
     for vol in vols:
         volPath = os.path.join(volDir, "%s.vmdk" % vol)
         volDict = kv.getAll(volPath)
 
         if not volDict:
-            print "Failed to fetch volume meta-data for ", volPath
+            print("Failed to fetch volume meta-data for ", volPath)
             continue
 
-        print "Vol metadata 'status' - %s, 'volOpts' - %s" % (
-            volDict[kv.STATUS], volDict[kv.VOL_OPTS])
+        print("Vol metadata 'status' - %s, 'volOpts' - %s" % (
+            volDict[kv.STATUS], volDict[kv.VOL_OPTS]))
         if volDict[kv.STATUS] != kv.DETACHED:
-            print 'Found volume %s with status %s, expected %s' % (
-                vol, volDict[kv.STATUS], kv.DETACHED)
+            print('Found volume %s with status %s, expected %s' % (
+                vol, volDict[kv.STATUS], kv.DETACHED))
 
     return
 
 
 def doAttach(volDir, vmName):
-    print "Attaching volumes"
+    print("Attaching volumes")
     for vol in vols:
         volPath = os.path.join(volDir, "%s.vmdk" % vol)
         vmci.attachVMDK(volPath, vmName)
-    print "Verifying volume metadata"
+    print("Verifying volume metadata")
     for vol in vols:
         volPath = os.path.join(volDir, "%s.vmdk" % vol)
         volDict = kv.getAll(volPath)
 
         if volDict[kv.STATUS] != kv.ATTACHED:
-            print 'Found volume %s with status %s, expected %s' % (
-                vol, volDict[kv.STATUS], kv.ATTACHED)
+            print('Found volume %s with status %s, expected %s' % (
+                vol, volDict[kv.STATUS], kv.ATTACHED))
 
     return
 
 
 def doDetach(volDir, vmName):
-    print "Detaching volumes"
+    print("Detaching volumes")
     for vol in vols:
         volPath = os.path.join(volDir, "%s.vmdk" % vol)
         vmci.detachVMDK(volPath, vmName)
-    print "Verifying volume metadata"
+    print("Verifying volume metadata")
     for vol in vols:
         volPath = os.path.join(volDir, "%s.vmdk" % vol)
         volDict = kv.getAll(volPath)
 
         if volDict[kv.STATUS] != kv.DETACHED:
-            print 'Found volume %s with status %s, expected %s' % (
-                vol, volDict[kv.STATUS], kv.DETACHED)
+            print('Found volume %s with status %s, expected %s' % (
+                vol, volDict[kv.STATUS], kv.DETACHED))
 
     return
 
 
 def doVolDelete(volDir):
-    print 'Removing volumes'
+    print('Removing volumes')
     for vol in vols:
         volPath = os.path.join(volDir, "%s.vmdk" % vol)
         vmci.removeVMDK(volPath)
@@ -112,18 +112,18 @@ def cleanup(vmId):
 
 def main(argv):
     if argv == []:
-        print 'vol_tests.py -d <test dir>'
+        print('vol_tests.py -d <test dir>')
         sys.exit(2)
 
     try:
         opts, args = getopt.getopt(argv, "hd:")
     except getopt.GetoptError:
-        print 'vol_tests.py -d <test dir>'
+        print('vol_tests.py -d <test dir>')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == '-h':
-            print 'vol_tests.py -v <vm config path> -d <volumes dir>'
+            print('vol_tests.py -v <vm config path> -d <volumes dir>')
             sys.exit()
         elif opt in ("-d"):
             volDir = arg
@@ -150,11 +150,11 @@ def main(argv):
     atexit.register(cleanup, vmId)
 
     if ret != 0:
-        print "Failed to power on VM, exiting", vmName
+        print("Failed to power on VM, exiting", vmName)
         sys.exit(0)
 
     # Start VM
-    print "Starting VM %s with id %s ..." % (vmName, vmId)
+    print("Starting VM %s with id %s ..." % (vmName, vmId))
 
     cmd = 'vim-cmd vmsvc/power.on %s' % vmId
     subprocess.call(cmd, shell=True)

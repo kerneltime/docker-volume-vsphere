@@ -393,12 +393,12 @@ def create_parser():
 def add_subparser(parser, cmds_dict):
     """ Recursively add subcommand parsers based on a dictionary of commands """
     subparsers = parser.add_subparsers()
-    for cmd, attributes in cmds_dict.items():
+    for cmd, attributes in list(cmds_dict.items()):
         subparser = subparsers.add_parser(cmd, help=attributes['help'])
         if 'func' in attributes:
             subparser.set_defaults(func=attributes['func'])
         if 'args' in attributes:
-            for arg, opts in attributes['args'].items():
+            for arg, opts in list(attributes['args'].items()):
                 opts = build_argparse_opts(opts)
                 subparser.add_argument(arg, **opts)
         if 'cmds' in attributes:
@@ -465,7 +465,7 @@ def ls(args):
         header = all_ls_headers()
         rows = generate_ls_rows(tenant_reg)
    
-    print(cli_table.create(header, rows))
+    print((cli_table.create(header, rows)))
 
 
 def ls_dash_c(columns, tenant_reg):
@@ -621,7 +621,7 @@ def policy_create(args):
     if output:
         print(output)
     else:
-        print('Successfully created policy: {0}'.format(args.name))
+        print(('Successfully created policy: {0}'.format(args.name)))
 
 
 def policy_rm(args):
@@ -629,7 +629,7 @@ def policy_rm(args):
     if output:
         print(output)
     else:
-        print('Successfully removed policy: {0}'.format(args.name))
+        print(('Successfully removed policy: {0}'.format(args.name)))
 
 
 def policy_ls(args):
@@ -645,14 +645,14 @@ def policy_ls(args):
         else:
             used_policies[policy_name] = 1
 
-    for name, content in policies.items():
+    for name, content in list(policies.items()):
         if name in used_policies:
             active = 'In use by {0} volumes'.format(used_policies[name])
         else:
             active = 'Unused'
         rows.append([name, content.strip(), active])
 
-    print(cli_table.create(header, rows))
+    print((cli_table.create(header, rows)))
 
 
 def policy_update(args):
@@ -660,32 +660,32 @@ def policy_update(args):
     if output:
         print(output)
     else:
-        print('Successfully updated policy: {0}'.format(args.name))
+        print(('Successfully updated policy: {0}'.format(args.name)))
 
 
 def status(args):
-    print("Version: {0}".format(get_version()))
+    print(("Version: {0}".format(get_version())))
     (status, pid) = get_service_status()
-    print("Status: {0}".format(status))
+    print(("Status: {0}".format(status)))
     if pid:
-        print("Pid: {0}".format(pid))
-        print("Port: {0}".format(get_listening_port(pid)))
-    print("LogConfigFile: {0}".format(log_config.LOG_CONFIG_FILE))
-    print("LogFile: {0}".format(log_config.LOG_FILE))
-    print("LogLevel: {0}".format(log_config.get_log_level()))
+        print(("Pid: {0}".format(pid)))
+        print(("Port: {0}".format(get_listening_port(pid))))
+    print(("LogConfigFile: {0}".format(log_config.LOG_CONFIG_FILE)))
+    print(("LogFile: {0}".format(log_config.LOG_FILE)))
+    print(("LogLevel: {0}".format(log_config.get_log_level())))
 
 
 def set_vol_opts(args):
     try:
         set_ok = vmdk_ops.set_vol_opts(args.volume, args.options) 
         if set_ok:
-           print('Successfully updated settings for : {0}'.format(args.volume))
+           print(('Successfully updated settings for : {0}'.format(args.volume)))
         else:
-           print('Failed to update {0} for {1}.'.format(args.options, args.volume))
+           print(('Failed to update {0} for {1}.'.format(args.options, args.volume)))
     except Exception as ex:
-        print('Failed to update {0} for {1} - {2}.'.format(args.options,
+        print(('Failed to update {0} for {1} - {2}.'.format(args.options,
                                                            args.volume,
-                                                           str(ex)))
+                                                           str(ex))))
 
 
 VMDK_OPSD = '/etc/init.d/vmdk-opsd'
@@ -741,7 +741,7 @@ def get_version():
 def get_tenant_from_db(name):
     try:
         connect_auth_db()
-    except auth_data.DbConnectionError, e:
+    except auth_data.DbConnectionError as e:
         error_info = "Failed to connect auth DB({0})".format(e)
         return error_info, None
     
@@ -751,7 +751,7 @@ def get_tenant_from_db(name):
 def create_tenant_in_db(name, description, default_datastore, default_privileges, vms, privileges):
     try:
         connect_auth_db()
-    except auth_data.DbConnectionError, e:
+    except auth_data.DbConnectionError as e:
         error_info = "Failed to connect auth DB({0})".format(e)
         return error_info, None
 
@@ -767,7 +767,7 @@ def get_tenant_list_from_db():
     try: 
         connect_auth_db()
         error_info, tenant_list = _auth_mgr.list_tenants()
-    except auth_data.DbConnectionError, e:
+    except auth_data.DbConnectionError as e:
         error_info = "Failed to connect auth DB({0})".format(e)
         return error_info, None
 
@@ -775,7 +775,7 @@ def get_tenant_list_from_db():
     return error_info, tenant_list
 
 def operation_fail(error_info):
-    print error_info
+    print(error_info)
     return error_info
 
 def tenant_ls_headers():
@@ -845,7 +845,7 @@ def tenant_create(args):
     if error_info:
         return operation_fail(error_info)
     else:
-        print "tenant create succeeded"    
+        print("tenant create succeeded")    
  
 def tenant_rm(args):
     """ Handle tenant rm command """
@@ -864,7 +864,7 @@ def tenant_rm(args):
     if error_info:
         return operation_fail(error_info)
     else:
-        print "tenant rm succeeded"
+        print("tenant rm succeeded")
 
 def tenant_ls(args):
     """ Handle tenant ls command """
@@ -874,7 +874,7 @@ def tenant_ls(args):
 
     header = tenant_ls_headers()
     rows = generate_tenant_ls_rows(tenant_list)
-    print(cli_table.create(header, rows)) 
+    print((cli_table.create(header, rows))) 
 
 def tenant_vm_add(args):
     """ Handle tenant vm add command """
@@ -895,7 +895,7 @@ def tenant_vm_add(args):
     if error_info:
         return operation_fail(error_info)
     else:
-        print "tenant vm add succeeded"
+        print("tenant vm add succeeded")
   
 def tenant_vm_rm(args):
     """ Handle tenant vm rm command """
@@ -917,7 +917,7 @@ def tenant_vm_rm(args):
     if error_info:
         return operation_fail(error_info)
     else:
-        print "tenant vm rm succeeded"
+        print("tenant vm rm succeeded")
 
 def tenant_vm_ls_headers():
     """ Return column names for tenant vm ls command """
@@ -948,7 +948,7 @@ def tenant_vm_ls(args):
    
     header = tenant_vm_ls_headers()
     rows = generate_tenant_vm_ls_rows(tenant.vms)
-    print(cli_table.create(header, rows))
+    print((cli_table.create(header, rows)))
 
 def default_privileges():
      privileges = [{'datastore': 'datastore1',
@@ -1005,13 +1005,13 @@ def tenant_access_add(args):
         return operation_fail(error_info)
 
     privileges = generate_privileges(args)
-    print privileges
+    print(privileges)
     error_info = tenant.set_datastore_access_privileges(_auth_mgr.conn, [privileges])
       
     if error_info:
         return operation_fail(error_info)
     else:
-        print "tenant access add succeeded"
+        print("tenant access add succeeded")
 
 def modify_privileges(privileges, args):
     """ Modify privileges based on CLI argument """
@@ -1070,7 +1070,7 @@ def tenant_access_set(args):
     if error_info:
         return operation_fail(error_info)
     else:
-        print "tenant access set succeeded"
+        print("tenant access set succeeded")
        
 def tenant_access_rm(args):
     """ Handle tenant access rm command """
@@ -1082,7 +1082,7 @@ def tenant_access_rm(args):
     if error_info:
         return operation_fail(error_info)
     else:
-        print "tenant access rm succeeded"
+        print("tenant access rm succeeded")
     
 def tenant_access_ls_headers():
     """ Return column names for tenant access ls command """
@@ -1115,7 +1115,7 @@ def tenant_access_ls(args):
     
     header = tenant_access_ls_headers()
     rows = generate_tenant_access_ls_rows(privileges)
-    print(cli_table.create(header, rows))
+    print((cli_table.create(header, rows)))
 
 if __name__ == "__main__":
     main()

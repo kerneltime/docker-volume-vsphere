@@ -98,24 +98,24 @@ class RowFactoryTests(unittest.TestCase):
         self.assertEqual(col2, 2, "by name: wrong result for column 'B'")
 
         self.assertEqual(row[0], 1, "by index: wrong result for column 0")
-        self.assertEqual(row[0L], 1, "by index: wrong result for column 0")
+        self.assertEqual(row[0], 1, "by index: wrong result for column 0")
         self.assertEqual(row[1], 2, "by index: wrong result for column 1")
-        self.assertEqual(row[1L], 2, "by index: wrong result for column 1")
+        self.assertEqual(row[1], 2, "by index: wrong result for column 1")
         self.assertEqual(row[-1], 2, "by index: wrong result for column -1")
-        self.assertEqual(row[-1L], 2, "by index: wrong result for column -1")
+        self.assertEqual(row[-1], 2, "by index: wrong result for column -1")
         self.assertEqual(row[-2], 1, "by index: wrong result for column -2")
-        self.assertEqual(row[-2L], 1, "by index: wrong result for column -2")
+        self.assertEqual(row[-2], 1, "by index: wrong result for column -2")
 
         with self.assertRaises(IndexError):
             row['c']
         with self.assertRaises(IndexError):
             row[2]
         with self.assertRaises(IndexError):
-            row[2L]
+            row[2]
         with self.assertRaises(IndexError):
             row[-3]
         with self.assertRaises(IndexError):
-            row[-3L]
+            row[-3]
         with self.assertRaises(IndexError):
             row[2**1000]
 
@@ -178,31 +178,31 @@ class TextFactoryTests(unittest.TestCase):
         self.con = sqlite.connect(":memory:")
 
     def CheckUnicode(self):
-        austria = unicode("Österreich", "latin1")
+        austria = str("Österreich", "latin1")
         row = self.con.execute("select ?", (austria,)).fetchone()
-        self.assertEqual(type(row[0]), unicode, "type of row[0] must be unicode")
+        self.assertEqual(type(row[0]), str, "type of row[0] must be unicode")
 
     def CheckString(self):
         self.con.text_factory = str
-        austria = unicode("Österreich", "latin1")
+        austria = str("Österreich", "latin1")
         row = self.con.execute("select ?", (austria,)).fetchone()
         self.assertEqual(type(row[0]), str, "type of row[0] must be str")
         self.assertEqual(row[0], austria.encode("utf-8"), "column must equal original data in UTF-8")
 
     def CheckCustom(self):
-        self.con.text_factory = lambda x: unicode(x, "utf-8", "ignore")
-        austria = unicode("Österreich", "latin1")
+        self.con.text_factory = lambda x: str(x, "utf-8", "ignore")
+        austria = str("Österreich", "latin1")
         row = self.con.execute("select ?", (austria.encode("latin1"),)).fetchone()
-        self.assertEqual(type(row[0]), unicode, "type of row[0] must be unicode")
-        self.assertTrue(row[0].endswith(u"reich"), "column must contain original data")
+        self.assertEqual(type(row[0]), str, "type of row[0] must be unicode")
+        self.assertTrue(row[0].endswith("reich"), "column must contain original data")
 
     def CheckOptimizedUnicode(self):
         self.con.text_factory = sqlite.OptimizedUnicode
-        austria = unicode("Österreich", "latin1")
-        germany = unicode("Deutchland")
+        austria = str("Österreich", "latin1")
+        germany = str("Deutchland")
         a_row = self.con.execute("select ?", (austria,)).fetchone()
         d_row = self.con.execute("select ?", (germany,)).fetchone()
-        self.assertEqual(type(a_row[0]), unicode, "type of non-ASCII row must be unicode")
+        self.assertEqual(type(a_row[0]), str, "type of non-ASCII row must be unicode")
         self.assertEqual(type(d_row[0]), str, "type of ASCII-only row must be str")
 
     def tearDown(self):
@@ -217,7 +217,7 @@ class TextFactoryTestsWithEmbeddedZeroBytes(unittest.TestCase):
     def CheckString(self):
         # text_factory defaults to unicode
         row = self.con.execute("select value from test").fetchone()
-        self.assertIs(type(row[0]), unicode)
+        self.assertIs(type(row[0]), str)
         self.assertEqual(row[0], "a\x00b")
 
     def CheckCustom(self):
@@ -238,10 +238,10 @@ class TextFactoryTestsWithEmbeddedZeroBytes(unittest.TestCase):
         # Non-ASCII -> unicode argument
         self.con.text_factory = sqlite.OptimizedUnicode
         self.con.execute("delete from test")
-        self.con.execute("insert into test (value) values (?)", (u'ä\0ö',))
+        self.con.execute("insert into test (value) values (?)", ('ä\0ö',))
         row = self.con.execute("select value from test").fetchone()
-        self.assertIs(type(row[0]), unicode)
-        self.assertEqual(row[0], u"ä\x00ö")
+        self.assertIs(type(row[0]), str)
+        self.assertEqual(row[0], "ä\x00ö")
 
     def tearDown(self):
         self.con.close()

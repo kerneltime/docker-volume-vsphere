@@ -227,11 +227,11 @@ def validate_opts(opts, vmdk_path):
     defaults = [kv.DEFAULT_DISK_SIZE, kv.DEFAULT_VSAN_POLICY,\
                 kv.DEFAULT_ALLOCATION_FORMAT, kv.DEFAULT_ATTACH_AS,\
                 kv.DEFAULT_ACCESS, kv.DEFAULT_FILESYSTEM_TYPE]
-    invalid = frozenset(opts.keys()).difference(valid_opts)
+    invalid = frozenset(list(opts.keys())).difference(valid_opts)
     if len(invalid) != 0:
         msg = 'Invalid options: {0} \n'.format(list(invalid)) \
                + 'Valid options and defaults: ' \
-               + '{0}'.format(zip(list(valid_opts), defaults))
+               + '{0}'.format(list(zip(list(valid_opts), defaults)))
         raise ValidationError(msg)
 
     if kv.SIZE in opts:
@@ -432,8 +432,8 @@ def listVMDK(vm_datastore, tenant):
     """
     vmdks = vmdk_utils.get_volumes(tenant)
     # build  fully qualified vol name for each volume found
-    return [{u'Name': get_full_vol_name(x['filename'], x['datastore'], vm_datastore),
-             u'Attributes': {}} \
+    return [{'Name': get_full_vol_name(x['filename'], x['datastore'], vm_datastore),
+             'Attributes': {}} \
             for x in vmdks]
 
 
@@ -1017,7 +1017,7 @@ def disk_attach(vmdk_path, vm):
 
 
 def err(string):
-    return {u'Error': string}
+    return {'Error': string}
 
 
 def disk_detach(vmdk_path, vm):
@@ -1099,7 +1099,7 @@ def set_vol_opts(name, options):
         kv.ATTACH_AS : kv.ATTACH_AS_TYPES
     }
 
-    invalid = frozenset(opts.keys()).difference(valid_opts.keys())
+    invalid = frozenset(list(opts.keys())).difference(list(valid_opts.keys()))
     if len(invalid) != 0:
         msg = 'Invalid options: {0} \n'.format(list(invalid)) \
                + 'Options that can be edited: ' \
@@ -1107,7 +1107,7 @@ def set_vol_opts(name, options):
         raise ValidationError(msg)
 
     has_invalid_opt_value = False
-    for key in opts.keys():
+    for key in list(opts.keys()):
         if key in valid_opts:
             if not opts[key] in valid_opts[key]:
                 msg = 'Invalid option value {0}.\n'.format(opts[key]) +\
@@ -1122,7 +1122,7 @@ def set_vol_opts(name, options):
     if vol_meta:
        if not vol_meta[kv.VOL_OPTS]:
            vol_meta[kv.VOL_OPTS] = {}
-       for key in opts.keys():
+       for key in list(opts.keys()):
            vol_meta[kv.VOL_OPTS][key] = opts[key]
        return kv.setAll(vmdk_path, vol_meta)
 
@@ -1188,7 +1188,7 @@ def execRequestThread(client_socket, cartel, request):
         try:
             req = json.loads(request.decode('utf-8'))
         except ValueError as e:
-            reply_string = {u'Error': "Failed to parse json '%s'." % request}
+            reply_string = {'Error': "Failed to parse json '%s'." % request}
             send_vmci_reply(client_socket, reply_string)
         else:
             details = req["details"]
@@ -1265,7 +1265,7 @@ def handleVmciRequests(port):
     lib.close(sock)  # close listening socket when the loop is over
 
 def usage():
-    print("Usage: %s -p <vSocket Port to listen on>" % sys.argv[0])
+    print(("Usage: %s -p <vSocket Port to listen on>" % sys.argv[0]))
 
 def main():
     log_config.configure()
