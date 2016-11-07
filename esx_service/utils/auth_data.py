@@ -514,7 +514,7 @@ class AuthorizationDataManager:
                 )
             self.conn.commit()
         except sqlite3.Error, e:
-            logging.error("Error %s when creating tenant_id %s", 
+            logging.error("Error %s when creating tenant %s", 
                           e, name)
             return str(e), tenant
 
