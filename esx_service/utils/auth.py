@@ -55,7 +55,7 @@ def get_tenant(vm_uuid):
                     (vm_uuid, )
         )
         result = cur.fetchone()
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error %s when querying from vms table for vm_id %s", e, vm_uuid)
         return str(e), None, None
 
@@ -72,7 +72,7 @@ def get_tenant(vm_uuid):
                     (tenant_uuid, )
             )
             result = cur.fetchone()
-        except sqlite3.Error, e:
+        except sqlite3.Error as e:
             logging.error("Error %s when querying from tenants table for tenant_id %s", e, tenant_uuid)
             return str(e), None, None
         if result:
@@ -95,7 +95,7 @@ def get_privileges(tenant_uuid, datastore):
                     (tenant_uuid, datastore)    
         )
         privileges = cur.fetchone()
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error %s when querying privileges table for tenant_id %s and datastore %s", 
                       e, tenant_uuid, datastore)
         return str(e), None
@@ -147,7 +147,7 @@ def get_total_storage_used(tenant_uuid, datastore):
                     "SELECT SUM(volume_size) FROM volumes WHERE tenant_id = ? and datastore = ?",
                     (tenant_uuid, datastore)    
         )
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error %s when querying storage table for tenant_id %s and datastore %s", 
                       e, tenant_uuid, datastore)
         return str(e), total_storage_used
@@ -211,7 +211,7 @@ def tables_exist():
     try:
         cur = _auth_mgr.conn.execute("SELECT name FROM sqlite_master WHERE type = 'table' and name = 'tenants';")
         result = cur.fetchall()
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error %s when checking whether table tenants exists or not", e)
         return str(e), False
 
@@ -223,7 +223,7 @@ def tables_exist():
     try:
         cur = _auth_mgr.conn.execute("SELECT name FROM sqlite_master WHERE type = 'table' and name = 'vms';")
         result = cur.fetchall()
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error %s when checking whether table vms exists or not", e)
         return str(e), False
 
@@ -247,7 +247,7 @@ def tables_exist():
     try:
         cur = _auth_mgr.conn.execute("SELECT name FROM sqlite_master WHERE type = 'table' and name = 'volumes';")
         result = cur.fetchall()
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error %s when checking whether table volumes exists or not", e)
         return str(e), False
 
@@ -278,7 +278,7 @@ def authorize(vm_uuid, datastore, cmd, opts):
     
     try:
         get_auth_mgr()
-    except auth_data.DbConnectionError, e:
+    except auth_data.DbConnectionError as e:
         error_info = "Failed to connect auth DB({0})".format(e)
         return error_info, None, None
 
@@ -321,7 +321,7 @@ def add_volume_to_volumes_table(tenant_uuid, datastore, vol_name, vol_size_in_MB
                     (tenant_uuid, datastore, vol_name, vol_size_in_MB)    
         )
         _auth_mgr.conn.commit()
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error %s when insert into volumes table for tenant_id %s and datastore %s", 
                       e, tenant_uuid, datastore)
         return str(e)
@@ -336,7 +336,7 @@ def get_row_from_tenants_table(conn, tenant_uuid):
         "SELECT * FROM tenants WHERE id=?",
         (tenant_uuid,)
         )
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error: %s when quering tenants table for tenant %s", 
                       e, tenant_uuid)
         return str(e), None
@@ -352,7 +352,7 @@ def get_row_from_vms_table(conn, tenant_uuid):
         "SELECT * FROM vms WHERE tenant_id=?",
         (tenant_uuid,)
         )
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error: %s when quering vms table for tenant %s", e, tenant_uuid)
         return str(e), None
 
@@ -367,7 +367,7 @@ def get_row_from_privileges_table(conn, tenant_uuid):
         "SELECT * FROM privileges WHERE tenant_id=?",
         (tenant_uuid,)
         )
-    except sqlite3.Error, e:
+    except sqlite3.Error as e:
         logging.error("Error: %s when quering privileges table for tenant %s", e, tenant_uuid)
         return str(e), None
 
