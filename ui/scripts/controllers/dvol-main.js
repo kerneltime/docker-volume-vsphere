@@ -18,10 +18,19 @@ define([], function() {
 
     DvolVsanService.getTenants()
     .then(function(res) {
-      console.log('getTenants: ' + res);
-    }, function(err) {
-      console.log('ERROR getTenants: ' + err);
-    });
+
+      }, function(err) {
+        console.log('ERROR getTenants: ' + err);
+      })
+    .then(DvolVsanService.createTenant(
+      'ui-created-tenant',
+      'a tenant created by the web ui'
+    ))
+    .then(function(res) {
+
+      }, function(err) {
+        console.log('ERROR createTenants: ' + err);
+      });
 
     //
     // -----------------------------
