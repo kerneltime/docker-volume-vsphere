@@ -4,8 +4,7 @@ define(['angular'], function(angular) {
   'use strict';
 
   return function(
-      $rootScope, $q, $log, $location, $interval, $filter, $timeout, $sce, $window,
-      VIMService, TaskService, StorageService, NotificationService, AuthService, StorageManager
+      $q, $log, $location, AuthService, StorageManager
   ) {
 
     var performRawSOAPRequest = function(
